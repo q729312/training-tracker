@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Completion Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  /* RGB versions for opacity control */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Background color tokens (Light Mode) */
+  --color-bg-1: rgba(59, 130, 246, 0.08); /* Light blue */
+  --color-bg-2: rgba(245, 158, 11, 0.08); /* Light yellow */
+  --color-bg-3: rgba(34, 197, 94, 0.08); /* Light green */
+  --color-bg-4: rgba(239, 68, 68, 0.08); /* Light red */
+  --color-bg-5: rgba(147, 51, 234, 0.08); /* Light purple */
+  --color-bg-6: rgba(249, 115, 22, 0.08); /* Light orange */
+  --color-bg-7: rgba(236, 72, 153, 0.08); /* Light pink */
+  --color-bg-8: rgba(6, 182, 212, 0.08); /* Light cyan */
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  /* Common style patterns */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  /* RGB versions for opacity control */
+  --color-success-rgb: 33, 128, 141;
+  --color-error-rgb: 192, 21, 47;
+  --color-warning-rgb: 168, 75, 47;
+  --color-info-rgb: 98, 108, 113;
+
+  /* Typography */
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}
+
+/* Dark mode colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* RGB versions for opacity control (Dark Mode) */
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    /* Background color tokens (Dark Mode) */
+    --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
+    --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
+    --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
+    --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
+    --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
+    --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
+    --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
+    --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+
+    /* Semantic Color Tokens (Dark Mode) */
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+    /* Common style patterns - updated for dark mode */
+    --focus-ring: 0 0 0 3px var(--color-focus-ring);
+    --focus-outline: 2px solid var(--color-primary);
+    --status-bg-opacity: 0.15;
+    --status-border-opacity: 0.25;
+    --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    /* RGB versions for dark mode */
+    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-error-rgb: var(--color-red-400-rgb);
+    --color-warning-rgb: var(--color-orange-400-rgb);
+    --color-info-rgb: var(--color-gray-300-rgb);
+  }
+}
+
+/* Data attribute for manual theme switching */
+[data-color-scheme="dark"] {
+  /* RGB versions for opacity control (dark mode) */
+  --color-gray-400-rgb: 119, 124, 124;
+  --color-teal-300-rgb: 50, 184, 198;
+  --color-gray-300-rgb: 167, 169, 169;
+  --color-gray-200-rgb: 245, 245, 245;
+
+  /* Colorful background palette - Dark Mode */
+  --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
+  --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
+  --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
+  --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
+  --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
+  --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
+  --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
+  --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+
+  /* Semantic Color Tokens (Dark Mode) */
+  --color-background: var(--color-charcoal-700);
+  --color-surface: var(--color-charcoal-800);
+  --color-text: var(--color-gray-200);
+  --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+  --color-primary: var(--color-teal-300);
+  --color-primary-hover: var(--color-teal-400);
+  --color-primary-active: var(--color-teal-800);
+  --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+  --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-error: var(--color-red-400);
+  --color-success: var(--color-teal-300);
+  --color-warning: var(--color-orange-400);
+  --color-info: var(--color-gray-300);
+  --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+  --color-btn-primary-text: var(--color-slate-900);
+  --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+  --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+  /* Common style patterns - updated for dark mode */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  /* RGB versions for dark mode */
+  --color-success-rgb: var(--color-teal-300-rgb);
+  --color-error-rgb: var(--color-red-400-rgb);
+  --color-warning-rgb: var(--color-orange-400-rgb);
+  --color-info-rgb: var(--color-gray-300-rgb);
+}
+
+[data-color-scheme="light"] {
+  /* RGB versions for opacity control (light mode) */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+
+  /* RGB versions for light mode */
+  --color-success-rgb: var(--color-teal-500-rgb);
+  --color-error-rgb: var(--color-red-500-rgb);
+  --color-warning-rgb: var(--color-orange-500-rgb);
+  --color-info-rgb: var(--color-slate-500-rgb);
+}
+
+/* Base styles */
+html {
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+h2 {
+  font-size: var(--font-size-3xl);
+}
+h3 {
+  font-size: var(--font-size-2xl);
+}
+h4 {
+  font-size: var(--font-size-xl);
+}
+h5 {
+  font-size: var(--font-size-lg);
+}
+h6 {
+  font-size: var(--font-size-md);
+}
+
+p {
+  margin: 0 0 var(--space-16) 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+code,
+pre {
+  font-family: var(--font-family-mono);
+  font-size: calc(var(--font-size-base) * 0.95);
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-sm);
+}
+
+code {
+  padding: var(--space-1) var(--space-4);
+}
+
+pre {
+  padding: var(--space-16);
+  margin: var(--space-16) 0;
+  overflow: auto;
+  border: 1px solid var(--color-border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+  border: none;
+  text-decoration: none;
+  position: relative;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:active {
+  background: var(--color-primary-active);
+}
+
+.btn--secondary {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover {
+  background: var(--color-secondary-hover);
+}
+
+.btn--secondary:active {
+  background: var(--color-secondary-active);
+}
+
+.btn--outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.btn--outline:hover {
+  background: var(--color-secondary);
+}
+
+.btn--sm {
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn--lg {
+  padding: var(--space-10) var(--space-20);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-md);
+}
+
+.btn--full-width {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form elements */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+textarea.form-control {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+}
+
+select.form-control {
+  padding: var(--space-8) var(--space-12);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: var(--select-caret-light);
+  background-repeat: no-repeat;
+  background-position: right var(--space-12) center;
+  background-size: 16px;
+  padding-right: var(--space-32);
+}
+
+/* Add a dark mode specific caret */
+@media (prefers-color-scheme: dark) {
+  select.form-control {
+    background-image: var(--select-caret-dark);
+  }
+}
+
+/* Also handle data-color-scheme */
+[data-color-scheme="dark"] select.form-control {
+  background-image: var(--select-caret-dark);
+}
+
+[data-color-scheme="light"] select.form-control {
+  background-image: var(--select-caret-light);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline: var(--focus-outline);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.form-group {
+  margin-bottom: var(--space-16);
+}
+
+/* Card component */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--duration-normal) var(--ease-standard);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card__body {
+  padding: var(--space-16);
+}
+
+.card__header,
+.card__footer {
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+/* Status indicators - simplified with CSS variables */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-6) var(--space-12);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.status--success {
+  background-color: rgba(
+    var(--color-success-rgb, 33, 128, 141),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-success);
+  border: 1px solid
+    rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
+}
+
+.status--error {
+  background-color: rgba(
+    var(--color-error-rgb, 192, 21, 47),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-error);
+  border: 1px solid
+    rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
+}
+
+.status--warning {
+  background-color: rgba(
+    var(--color-warning-rgb, 168, 75, 47),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-warning);
+  border: 1px solid
+    rgba(var(--color-warning-rgb, 168, 75, 47), var(--status-border-opacity));
+}
+
+.status--info {
+  background-color: rgba(
+    var(--color-info-rgb, 98, 108, 113),
+    var(--status-bg-opacity)
+  );
+  color: var(--color-info);
+  border: 1px solid
+    rgba(var(--color-info-rgb, 98, 108, 113), var(--status-border-opacity));
+}
+
+/* Container layout */
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: var(--space-16);
+  padding-left: var(--space-16);
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--container-sm);
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-md);
+  }
+}
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-lg);
+  }
+}
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--container-xl);
+  }
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
+.gap-16 {
+  gap: var(--space-16);
+}
+
+.m-0 {
+  margin: 0;
+}
+.mt-8 {
+  margin-top: var(--space-8);
+}
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+.mx-8 {
+  margin-left: var(--space-8);
+  margin-right: var(--space-8);
+}
+.my-8 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.p-0 {
+  padding: 0;
+}
+.py-8 {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+.px-8 {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}
+.py-16 {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+.px-16 {
+  padding-left: var(--space-16);
+  padding-right: var(--space-16);
+}
+
+.block {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+}
+
+/* Dark mode specifics */
+[data-color-scheme="dark"] .btn--outline {
+  border: 1px solid var(--color-border-secondary);
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+    format('woff2');
+}
+
+        /* Custom application styles */
+        .app-header {
+            background: var(--color-bg-1);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-20);
+            margin-bottom: var(--space-24);
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--space-24);
+            gap: var(--space-8);
+        }
+
+        .nav-tab {
+            padding: var(--space-12) var(--space-16);
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .nav-tab:hover {
+            color: var(--color-text);
+        }
+
+        .nav-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            padding: var(--space-16);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-card-border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .matrix-container {
+            overflow-x: auto;
+            margin-bottom: var(--space-24);
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .matrix-table th {
+            background: var(--color-bg-1);
+            padding: var(--space-12);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            font-weight: var(--font-weight-semibold);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .matrix-table th:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--color-bg-2);
+            z-index: 11;
+        }
+
+        .matrix-table td {
+            padding: var(--space-8);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .matrix-table td:first-child {
+            font-weight: var(--font-weight-medium);
+            background: var(--color-bg-2);
+            position: sticky;
+            left: 0;
+        }
+
+        .completion-cell {
+            text-align: center;
+            cursor: pointer;
+            transition: background-color var(--duration-fast) var(--ease-standard);
+        }
+
+        .completion-cell:hover {
+            background: var(--color-bg-3);
+        }
+
+        .completion-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-lg);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .completion-status.completed {
+            background: var(--color-success);
+            color: var(--color-surface);
+        }
+
+        .completion-status.incomplete {
+            background: var(--color-secondary);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border);
+        }
+
+        .completion-status:hover {
+            transform: scale(1.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-20);
+        }
+
+        .item-list {
+            display: grid;
+            gap: var(--space-12);
+        }
+
+        .item-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-16);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .item-name {
+            font-weight: var(--font-weight-medium);
+        }
+
+        .item-meta {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: var(--space-8);
+        }
+
+        .form-row {
+            display: flex;
+            gap: var(--space-16);
+            align-items: end;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-top: var(--space-4);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-success);
+            transition: width var(--duration-normal) var(--ease-standard);
+        }
+
+        .btn--danger {
+            background: var(--color-error);
+            color: var(--color-surface);
+        }
+
+        .btn--danger:hover {
+            background: rgba(var(--color-error-rgb), 0.8);
+        }
+
+        .completion-date {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-2);
+            cursor: pointer;
+        }
+
+        .completion-date:hover {
+            color: var(--color-primary);
+        }
+
+        .employee-training-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-8);
+        }
+
+        .employee-training-item.completed {
+            background: var(--color-bg-3);
+            border-color: var(--color-success);
+        }
+
+        .employee-training-info {
+            flex: 1;
+        }
+
+        .employee-training-name {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-4);
+        }
+
+        .employee-training-date {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: var(--color-surface);
+            margin: 15% auto;
+            padding: var(--space-24);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: var(--color-text-secondary);
+            float: right;
+            font-size: var(--font-size-3xl);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--color-text);
+        }
+
+        .search-box {
+            margin-bottom: var(--space-16);
+            max-width: 300px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-32);
+            color: var(--color-text-secondary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--space-8);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1>Training Completion Tracker</h1>
+                    <p class="m-0">Professional project training management system</p>
+                </div>
+                <div class="flex items-center gap-16">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" for="projectCode">Project Code:</label>
+                        <input type="text" class="form-control" id="projectCode" value="ИССЛЕД-2025-001" style="width: 200px;">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- View Selection -->
+        <div class="card" style="margin-bottom: var(--space-24);">
+            <div class="card__body">
+                <div class="flex items-center gap-16">
+                    <label class="form-label" for="viewSelector" style="margin: 0; font-weight: var(--font-weight-bold);">Select View:</label>
+                    <select class="form-control" id="viewSelector" style="width: 250px;">
+                        <option value="manager">Manager View (Full Access)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-tabs" id="managerTabs">
+            <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-tab" data-tab="employees">Manage Employees</button>
+            <button class="nav-tab" data-tab="trainings">Manage Trainings</button>
+        </nav>
+
+        <!-- Employee View -->
+        <div class="employee-view" id="employeeView" style="display: none;">
+            <div class="card">
+                <div class="card__body">
+                    <h2 id="employeeViewTitle">My Training Progress</h2>
+                    <div id="employeeTrainingList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalEmployees">0</div>
+                    <div class="stat-label">Total Employees</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalTrainings">0</div>
+                    <div class="stat-label">Total Trainings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="overallCompletion">0%</div>
+                    <div class="stat-label">Overall Completion</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCompletions">0</div>
+                    <div class="stat-label">Total Completions</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>Training Completion Matrix</h2>
+                <div class="btn-group">
+                    <input type="text" class="form-control" id="matrixSearch" placeholder="Search employees or trainings..." style="width: 300px;">
+                    <button class="btn btn--primary" onclick="generatePDFForms()" style="background: var(--color-success); display: flex; align-items: center; gap: var(--space-8);">
+                        📄 Генерировать PDF формы
+                    </button>
+                    <button class="btn btn--secondary" onclick="exportToCSV()">Export CSV</button>
+                    <button class="btn btn--outline" onclick="clearAllCompletions()">Clear All</button>
+                </div>
+            </div>
+
+            <div class="matrix-container">
+                <table class="matrix-table" id="matrixTable">
+                    <thead id="matrixHeader">
+                    </thead>
+                    <tbody id="matrixBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Employees Tab -->
+        <div class="tab-content" id="employees">
+            <div class="section-header">
+                <h2>Employee Management</h2>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3 style="margin-bottom: var(--space-16);">Add New Employee</h3>
+                    <form id="employeeForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name *</label>
+                                <input type="text" class="form-control" id="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name *</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                            <button type="submit" class="btn btn--primary">Add Employee</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div style="margin-top: var(--space-24);">
+                <h3 style="margin-bottom: var(--space-16);">Current Employees</h3>
+                <div class="item-list" id="employeeList">
+                    <!-- Employee items will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Trainings Tab -->
+        <div class="tab-content" id="trainings">
+            <div class="section-header">
+                <h2>Training Management</h2>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3 style="margin-bottom: var(--space-16);">Add New Training</h3>
+                    <form id="trainingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="trainingName">Training Name *</label>
+                                <input type="text" class="form-control" id="trainingName" required>
+                            </div>
+                            <button type="submit" class="btn btn--primary">Add Training</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div style="margin-top: var(--space-24);">
+                <h3 style="margin-bottom: var(--space-16);">Current Trainings</h3>
+                <div class="item-list" id="trainingList">
+                    <!-- Training items will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Generation Modal -->
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePDFModal()">&times;</span>
+            <h3 style="margin-bottom: var(--space-20);">Генерировать PDF формы</h3>
+            <p style="margin-bottom: var(--space-16); color: var(--color-text-secondary);">Формы создаются в формате PDF с поддержкой кириллицы</p>
+            
+            <div class="form-group">
+                <label class="form-label" for="pdfEmployeeSelect">Выберите сотрудника:</label>
+                <select class="form-control" id="pdfEmployeeSelect">
+                    <option value="all">Все сотрудники</option>
+                </select>
+            </div>
+            
+            <div class="btn-group" style="justify-content: flex-end; margin-top: var(--space-20);">
+                <button class="btn btn--secondary" onclick="closePDFModal()">Отмена</button>
+                <button class="btn btn--primary" onclick="generateSelectedPDFs()">Генерировать PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        let employees = [];
+        let trainings = [];
+        let completions = [];
+        let nextEmployeeId = 1;
+        let nextTrainingId = 1;
+        let editingEmployee = null;
+        let editingTraining = null;
+        let projectCode = 'ИССЛЕД-2025-001';
+        let currentView = 'manager';
+        let currentEmployee = null;
+
+        // Initialize with sample data
+        function initializeSampleData() {
+            // Sample employees
+            employees = [
+                { id: 1, firstName: 'Иван', lastName: 'Смирнов' },
+                { id: 2, firstName: 'Мария', lastName: 'Петрова' },
+                { id: 3, firstName: 'Алексей', lastName: 'Козлов' },
+                { id: 4, firstName: 'Елена', lastName: 'Новикова' }
+            ];
+
+            // Sample trainings
+            trainings = [
+                { id: 1, name: 'GCP (Надлежащая клиническая практика)' },
+                { id: 2, name: 'Протокол исследования v2.1' },
+                { id: 3, name: 'Процедуры отчетности по безопасности' },
+                { id: 4, name: 'Защита данных и GDPR' },
+                { id: 5, name: 'Визит инициации центра' }
+            ];
+
+            nextEmployeeId = 5;
+            nextTrainingId = 6;
+
+            // Sample completions with dates
+            completions = [
+                { employeeId: 1, trainingId: 1, completed: true, completionDate: '2024-10-15' },
+                { employeeId: 1, trainingId: 2, completed: true, completionDate: '2024-10-18' },
+                { employeeId: 2, trainingId: 1, completed: true, completionDate: '2024-10-16' },
+                { employeeId: 3, trainingId: 1, completed: true, completionDate: '2024-10-14' },
+                { employeeId: 3, trainingId: 4, completed: true, completionDate: '2024-10-20' },
+                { employeeId: 4, trainingId: 5, completed: true, completionDate: '2024-10-22' }
+            ];
+
+            // Populate employee dropdown
+            updateViewSelector();
+        }
+
+        // View management
+        function updateViewSelector() {
+            const selector = document.getElementById('viewSelector');
+            const currentValue = selector.value;
+            
+            selector.innerHTML = '<option value="manager">Manager View (Full Access)</option>' +
+                employees.map(emp => `<option value="${emp.id}">${emp.firstName} ${emp.lastName}</option>`).join('');
+            
+            // Restore previous selection if still valid
+            if (currentValue && (currentValue === 'manager' || employees.find(emp => emp.id == currentValue))) {
+                selector.value = currentValue;
+            }
+        }
+        
+        function initializeViewSelector() {
+            const selector = document.getElementById('viewSelector');
+            selector.addEventListener('change', switchView);
+        }
+
+        function switchView() {
+            const viewSelector = document.getElementById('viewSelector');
+            const selectedValue = viewSelector.value;
+            
+            if (selectedValue === 'manager') {
+                currentView = 'manager';
+                currentEmployee = null;
+                showManagerView();
+            } else {
+                currentView = 'employee';
+                currentEmployee = parseInt(selectedValue);
+                showEmployeeView();
+            }
+        }
+
+        function showManagerView() {
+            document.getElementById('managerTabs').style.display = 'flex';
+            document.getElementById('employeeView').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.querySelector('.tab-content.active').style.display = 'block';
+        }
+
+        function showEmployeeView() {
+            document.getElementById('managerTabs').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById('employeeView').style.display = 'block';
+            renderEmployeeView();
+        }
+
+        function renderEmployeeView() {
+            const employee = employees.find(emp => emp.id === currentEmployee);
+            if (!employee) return;
+            
+            document.getElementById('employeeViewTitle').textContent = `${employee.firstName} ${employee.lastName} - Training Progress`;
+            
+            const container = document.getElementById('employeeTrainingList');
+            
+            if (trainings.length === 0) {
+                container.innerHTML = '<div class="empty-state">No trainings available yet.</div>';
+                return;
+            }
+            
+            container.innerHTML = trainings.map(training => {
+                const completion = completions.find(c => c.employeeId === currentEmployee && c.trainingId === training.id);
+                const isCompleted = completion && completion.completed;
+                const completionDate = completion && completion.completionDate ? formatDate(completion.completionDate) : '';
+                
+                return `
+                    <div class="employee-training-item ${isCompleted ? 'completed' : ''}">
+                        <div class="employee-training-info">
+                            <div class="employee-training-name">${training.name}</div>
+                            ${isCompleted ? `<div class="employee-training-date">Completed: ${completionDate}</div>` : '<div class="employee-training-date">Not completed</div>'}
+                        </div>
+                        <div>
+                            <input type="checkbox" ${isCompleted ? 'checked' : ''} 
+                                   onchange="toggleEmployeeCompletion(${currentEmployee}, ${training.id}, this.checked)">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleEmployeeCompletion(employeeId, trainingId, isCompleted) {
+            const existingCompletion = completions.find(c => c.employeeId === employeeId && c.trainingId === trainingId);
+            
+            if (existingCompletion) {
+                existingCompletion.completed = isCompleted;
+                if (isCompleted && !existingCompletion.completionDate) {
+                    existingCompletion.completionDate = getCurrentDate();
+                }
+            } else if (isCompleted) {
+                completions.push({
+                    employeeId,
+                    trainingId,
+                    completed: true,
+                    completionDate: getCurrentDate()
+                });
+            }
+            
+            renderEmployeeView();
+            updateStats();
+        }
+
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.dataset.tab;
+                    
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Update active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabName) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Employee management
+        function addEmployee(firstName, lastName) {
+            if (!firstName.trim() || !lastName.trim()) {
+                alert('Please provide both first name and last name.');
+                return;
+            }
+
+            const employee = {
+                id: nextEmployeeId++,
+                firstName: firstName.trim(),
+                lastName: lastName.trim()
+            };
+
+            employees.push(employee);
+            renderEmployeeList();
+            renderMatrix();
+            updateStats();
+            updateViewSelector();
+        }
+
+        function editEmployee(id, firstName, lastName) {
+            const employee = employees.find(emp => emp.id === id);
+            if (employee) {
+                employee.firstName = firstName.trim();
+                employee.lastName = lastName.trim();
+                updateViewSelector();
+                renderEmployeeList();
+                renderMatrix();
+                if (currentView === 'employee' && currentEmployee === id) {
+                    renderEmployeeView();
+                }
+            }
+        }
+
+        function deleteEmployee(id) {
+            if (confirm('Are you sure you want to delete this employee? All their training completions will be lost.')) {
+                employees = employees.filter(emp => emp.id !== id);
+                completions = completions.filter(comp => comp.employeeId !== id);
+                
+                // If currently viewing this employee, switch to manager view
+                if (currentView === 'employee' && currentEmployee === id) {
+                    document.getElementById('viewSelector').value = 'manager';
+                    switchView();
+                }
+                
+                updateViewSelector();
+                renderEmployeeList();
+                renderMatrix();
+                updateStats();
+            }
+        }
+
+        function renderEmployeeList() {
+            const container = document.getElementById('employeeList');
+            
+            if (employees.length === 0) {
+                container.innerHTML = '<div class="empty-state">No employees added yet. Add your first employee above.</div>';
+                return;
+            }
+
+            container.innerHTML = employees.map(emp => {
+                const completedCount = completions.filter(c => c.employeeId === emp.id && c.completed).length;
+                const completionRate = trainings.length > 0 ? Math.round((completedCount / trainings.length) * 100) : 0;
+                
+                return `
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-name" id="emp-name-${emp.id}">${emp.firstName} ${emp.lastName}</div>
+                            <div class="item-meta">
+                                ${completedCount} of ${trainings.length} trainings completed (${completionRate}%)
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${completionRate}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn--sm btn--secondary" onclick="startEditEmployee(${emp.id})">Edit</button>
+                            <button class="btn btn--sm btn--danger" onclick="deleteEmployee(${emp.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startEditEmployee(id) {
+            const employee = employees.find(emp => emp.id === id);
+            const nameElement = document.getElementById(`emp-name-${id}`);
+            
+            nameElement.innerHTML = `
+                <div class="form-row" style="margin: 0;">
+                    <input type="text" class="form-control" value="${employee.firstName}" id="edit-first-${id}" style="margin-right: var(--space-8);">
+                    <input type="text" class="form-control" value="${employee.lastName}" id="edit-last-${id}" style="margin-right: var(--space-8);">
+                    <button class="btn btn--sm btn--primary" onclick="saveEmployeeEdit(${id})">Save</button>
+                    <button class="btn btn--sm btn--secondary" onclick="cancelEmployeeEdit(${id}, '${employee.firstName}', '${employee.lastName}')">Cancel</button>
+                </div>
+            `;
+        }
+
+        function saveEmployeeEdit(id) {
+            const firstName = document.getElementById(`edit-first-${id}`).value;
+            const lastName = document.getElementById(`edit-last-${id}`).value;
+            
+            if (firstName.trim() && lastName.trim()) {
+                editEmployee(id, firstName, lastName);
+            } else {
+                alert('Please provide both first name and last name.');
+            }
+        }
+
+        function cancelEmployeeEdit(id, originalFirst, originalLast) {
+            document.getElementById(`emp-name-${id}`).textContent = `${originalFirst} ${originalLast}`;
+        }
+
+        // Training management
+        function addTraining(name) {
+            if (!name.trim()) {
+                alert('Please provide a training name.');
+                return;
+            }
+
+            const training = {
+                id: nextTrainingId++,
+                name: name.trim()
+            };
+
+            trainings.push(training);
+            renderTrainingList();
+            renderMatrix();
+            updateStats();
+        }
+
+        function editTraining(id, name) {
+            const training = trainings.find(t => t.id === id);
+            if (training) {
+                training.name = name.trim();
+                renderTrainingList();
+                renderMatrix();
+            }
+        }
+
+        function deleteTraining(id) {
+            if (confirm('Are you sure you want to delete this training? All completion records for this training will be lost.')) {
+                trainings = trainings.filter(t => t.id !== id);
+                completions = completions.filter(comp => comp.trainingId !== id);
+                renderTrainingList();
+                renderMatrix();
+                updateStats();
+            }
+        }
+
+        function renderTrainingList() {
+            const container = document.getElementById('trainingList');
+            
+            if (trainings.length === 0) {
+                container.innerHTML = '<div class="empty-state">No trainings added yet. Add your first training above.</div>';
+                return;
+            }
+
+            container.innerHTML = trainings.map(training => {
+                const completedCount = completions.filter(c => c.trainingId === training.id && c.completed).length;
+                const completionRate = employees.length > 0 ? Math.round((completedCount / employees.length) * 100) : 0;
+                
+                return `
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-name" id="training-name-${training.id}">${training.name}</div>
+                            <div class="item-meta">
+                                ${completedCount} of ${employees.length} employees completed (${completionRate}%)
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${completionRate}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn--sm btn--secondary" onclick="startEditTraining(${training.id})">Edit</button>
+                            <button class="btn btn--sm btn--danger" onclick="deleteTraining(${training.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startEditTraining(id) {
+            const training = trainings.find(t => t.id === id);
+            const nameElement = document.getElementById(`training-name-${id}`);
+            
+            nameElement.innerHTML = `
+                <div class="form-row" style="margin: 0;">
+                    <input type="text" class="form-control" value="${training.name}" id="edit-training-${id}" style="margin-right: var(--space-8);">
+                    <button class="btn btn--sm btn--primary" onclick="saveTrainingEdit(${id})">Save</button>
+                    <button class="btn btn--sm btn--secondary" onclick="cancelTrainingEdit(${id}, '${training.name}')">Cancel</button>
+                </div>
+            `;
+        }
+
+        function saveTrainingEdit(id) {
+            const name = document.getElementById(`edit-training-${id}`).value;
+            
+            if (name.trim()) {
+                editTraining(id, name);
+            } else {
+                alert('Please provide a training name.');
+            }
+        }
+
+        function cancelTrainingEdit(id, originalName) {
+            document.getElementById(`training-name-${id}`).textContent = originalName;
+        }
+
+        // Date utilities
+        function getCurrentDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        function formatDateRussian(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Matrix rendering
+        function renderMatrix() {
+            const header = document.getElementById('matrixHeader');
+            const body = document.getElementById('matrixBody');
+            
+            // Clear existing content
+            header.innerHTML = '';
+            body.innerHTML = '';
+            
+            if (employees.length === 0 && trainings.length === 0) {
+                body.innerHTML = '<tr><td class="empty-state" style="text-align: center; padding: var(--space-32);">Add employees and trainings to start tracking completion</td></tr>';
+                return;
+            }
+            
+            if (employees.length === 0) {
+                body.innerHTML = '<tr><td class="empty-state" style="text-align: center; padding: var(--space-32);">Add employees to start tracking</td></tr>';
+                return;
+            }
+            
+            if (trainings.length === 0) {
+                body.innerHTML = '<tr><td class="empty-state" style="text-align: center; padding: var(--space-32);">Add trainings to start tracking</td></tr>';
+                return;
+            }
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Employee</th>' + trainings.map(training => 
+                `<th title="${training.name}">${training.name}</th>`
+            ).join('');
+            header.appendChild(headerRow);
+
+            // Create employee rows
+            employees.forEach(employee => {
+                const row = document.createElement('tr');
+                let rowHtml = `<td>${employee.firstName} ${employee.lastName}</td>`;
+                
+                trainings.forEach(training => {
+                    const completion = completions.find(c => c.employeeId === employee.id && c.trainingId === training.id);
+                    const isCompleted = completion && completion.completed;
+                    const completionDate = completion && completion.completionDate ? formatDate(completion.completionDate) : '';
+                    
+                    rowHtml += `
+                        <td class="completion-cell" onclick="toggleCompletion(${employee.id}, ${training.id})">
+                            <div class="completion-status ${isCompleted ? 'completed' : 'incomplete'}" title="${isCompleted ? 'Completed' : 'Not completed'} - Click to toggle">
+                                ${isCompleted ? '✓' : ''}
+                            </div>
+                            ${isCompleted && completionDate ? `<div class="completion-date" onclick="editCompletionDate(event, ${employee.id}, ${training.id})" title="Click to edit date">${completionDate}</div>` : ''}
+                        </td>
+                    `;
+                });
+                
+                row.innerHTML = rowHtml;
+                body.appendChild(row);
+            });
+        }
+
+        function editCompletionDate(event, employeeId, trainingId) {
+            event.stopPropagation();
+            const completion = completions.find(c => c.employeeId === employeeId && c.trainingId === trainingId);
+            if (!completion) return;
+            
+            const newDate = prompt('Enter completion date (YYYY-MM-DD):', completion.completionDate || getCurrentDate());
+            if (newDate && newDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                completion.completionDate = newDate;
+                renderMatrix();
+                renderEmployeeList();
+                renderTrainingList();
+                if (currentView === 'employee') {
+                    renderEmployeeView();
+                }
+            }
+        }
+
+        // Completion management
+        function toggleCompletion(employeeId, trainingId) {
+            const existingCompletion = completions.find(c => c.employeeId === employeeId && c.trainingId === trainingId);
+            
+            if (existingCompletion) {
+                existingCompletion.completed = !existingCompletion.completed;
+                if (existingCompletion.completed && !existingCompletion.completionDate) {
+                    existingCompletion.completionDate = getCurrentDate();
+                }
+            } else {
+                completions.push({
+                    employeeId,
+                    trainingId,
+                    completed: true,
+                    completionDate: getCurrentDate()
+                });
+            }
+            
+            renderMatrix();
+            renderEmployeeList();
+            renderTrainingList();
+            updateStats();
+        }
+
+
+
+        function clearAllCompletions() {
+            if (confirm('Are you sure you want to clear all training completions? This action cannot be undone.')) {
+                completions.forEach(c => {
+                    c.completed = false;
+                    c.completionDate = null;
+                });
+                renderMatrix();
+                renderEmployeeList();
+                renderTrainingList();
+                updateStats();
+                if (currentView === 'employee') {
+                    renderEmployeeView();
+                }
+            }
+        }
+
+        // Statistics
+        function updateStats() {
+            const totalEmployees = employees.length;
+            const totalTrainings = trainings.length;
+            const totalPossibleCompletions = totalEmployees * totalTrainings;
+            const actualCompletions = completions.filter(c => c.completed).length;
+            const overallCompletion = totalPossibleCompletions > 0 ? Math.round((actualCompletions / totalPossibleCompletions) * 100) : 0;
+            
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+            document.getElementById('totalTrainings').textContent = totalTrainings;
+            document.getElementById('overallCompletion').textContent = `${overallCompletion}%`;
+            document.getElementById('totalCompletions').textContent = actualCompletions;
+        }
+
+        // Search functionality
+        function initializeSearch() {
+            const searchInput = document.getElementById('matrixSearch');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filterMatrix(searchTerm);
+            });
+        }
+
+        function filterMatrix(searchTerm) {
+            const table = document.getElementById('matrixTable');
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const employeeName = row.cells[0].textContent.toLowerCase();
+                const shouldShow = employeeName.includes(searchTerm) || searchTerm === '';
+                row.style.display = shouldShow ? '' : 'none';
+            });
+            
+            // Also filter training columns
+            const headerCells = table.querySelectorAll('thead th');
+            const bodyCells = table.querySelectorAll('tbody td');
+            
+            headerCells.forEach((headerCell, index) => {
+                if (index === 0) return; // Skip employee name column
+                
+                const trainingName = headerCell.textContent.toLowerCase();
+                const shouldShow = trainingName.includes(searchTerm) || searchTerm === '';
+                headerCell.style.display = shouldShow ? '' : 'none';
+                
+                // Hide corresponding body cells
+                rows.forEach(row => {
+                    if (row.cells[index]) {
+                        row.cells[index].style.display = shouldShow ? '' : 'none';
+                    }
+                });
+            });
+        }
+
+        // PDF Document Generation
+        function generatePDFForms() {
+            if (employees.length === 0) {
+                alert('Please add employees before generating PDF forms.');
+                return;
+            }
+            
+            // Update modal dropdown
+            const pdfSelect = document.getElementById('pdfEmployeeSelect');
+            pdfSelect.innerHTML = '<option value="all">Все сотрудники</option>' +
+                employees.map(emp => `<option value="${emp.id}">${emp.firstName} ${emp.lastName}</option>`).join('');
+            
+            // Show modal
+            document.getElementById('pdfModal').style.display = 'block';
+        }
+        
+        function closePDFModal() {
+            document.getElementById('pdfModal').style.display = 'none';
+        }
+        
+        function generateSelectedPDFs() {
+            const selectedValue = document.getElementById('pdfEmployeeSelect').value;
+            
+            if (selectedValue === 'all') {
+                generateAllPDFs();
+            } else {
+                generateSinglePDF(parseInt(selectedValue));
+            }
+            
+            closePDFModal();
+        }
+        
+        function generateSinglePDF(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            const completedTrainings = completions.filter(c => c.employeeId === employeeId && c.completed)
+                .map(c => ({
+                    ...c,
+                    training: trainings.find(t => t.id === c.trainingId)
+                }))
+                .filter(c => c.training); // Remove any completions for deleted trainings
+            
+            generatePDF(employee, completedTrainings);
+        }
+        
+        function generateAllPDFs() {
+            employees.forEach((employee, index) => {
+                const completedTrainings = completions.filter(c => c.employeeId === employee.id && c.completed)
+                    .map(c => ({
+                        ...c,
+                        training: trainings.find(t => t.id === c.trainingId)
+                    }))
+                    .filter(c => c.training);
+                
+                // Small delay between PDFs to avoid browser blocking
+                setTimeout(() => {
+                    generatePDF(employee, completedTrainings);
+                }, index * 800);
+            });
+        }
+        
+        function generatePDF(employee, completedTrainings) {
+            const currentProjectCode = document.getElementById('projectCode').value || 'ИССЛЕД-2025-001';
+            
+            // ===== LOGO CONFIGURATION =====
+            // To add your company logo, replace the placeholder below with one of these options:
+            // 
+            // Option 1: Use an image URL
+            // const logoHTML = '<img src="https://your-company.com/logo.png" alt="Logo" style="max-width: 150px; height: auto; color: #000000;" />';
+            //
+            // Option 2: Use a base64 encoded image (paste your base64 string)
+            // const logoHTML = '<img src="data:image/png;base64,YOUR_BASE64_STRING_HERE" alt="Logo" style="max-width: 150px; height: auto; color: #000000;" />';
+            //
+            // Option 3: Keep the placeholder
+            const logoHTML = '<div style="border: 2px solid #000000; padding: 15px 30px; display: inline-block; font-weight: bold; color: #000000; background-color: #f9f9f9;">[ЛОГОТИП / LOGO]</div>';
+            // =============================
+            
+            // Create HTML content matching the template
+            const content = document.createElement('div');
+            content.innerHTML = `
+                <div style="font-family: Arial, sans-serif; font-size: 12pt; padding: 20px; line-height: 1.4; color: #000000;">
+                    
+                    <!-- LOGO AT TOP -->
+                    <div style="text-align: center; margin-bottom: 30px; color: #000000;">
+                        ${logoHTML}
+                    </div>
+                    
+                    <!-- MAIN TITLE -->
+                    <div style="text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 30px; line-height: 1.3; color: #000000;">
+                        Журнал регистрации самостоятельных тренингов проектной команды
+                    </div>
+                    
+                    <!-- INFO BOX -->
+                    <div style="border: 2px solid #000000; padding: 15px; margin-bottom: 20px; page-break-inside: avoid; color: #000000;">
+                        <div style="margin-bottom: 10px; font-weight: bold; color: #000000;">
+                            Протокол №: ${currentProjectCode}
+                        </div>
+                        <div style="font-weight: bold; margin-bottom: 5px; color: #000000;">
+                            Тема тренинга:
+                        </div>
+                        <div style="margin-left: 20px; margin-top: 5px; color: #000000;">
+                            ${completedTrainings.length > 0 
+                                ? completedTrainings.map((c, i) => `<div style="margin-bottom: 3px; color: #000000;">${i + 1}. ${c.training.name}</div>`).join('')
+                                : '<div style="color: #000000;">Нет завершенных тренингов</div>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- TABLE -->
+                    <table style="width: 100%; border-collapse: collapse; border: 2px solid #000000; page-break-inside: avoid; color: #000000;">
+                        <thead>
+                            <tr style="background-color: #f0f0f0;">
+                                <th style="border: 1px solid #000000; padding: 8px; text-align: left; font-weight: bold; color: #000000;">ФИО участника</th>
+                                <th style="border: 1px solid #000000; padding: 8px; text-align: left; font-weight: bold; color: #000000;">Роль в исследовании</th>
+                                <th style="border: 1px solid #000000; padding: 8px; text-align: left; font-weight: bold; color: #000000;">Подпись</th>
+                                <th style="border: 1px solid #000000; padding: 8px; text-align: left; font-weight: bold; color: #000000;">Дата проведения тренинга</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${completedTrainings.length > 0 
+                                ? completedTrainings.map(training => `
+                                    <tr>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">${employee.firstName} ${employee.lastName}</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">CRA</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; height: 30px; color: #000000;">&nbsp;</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">${training.completionDate ? formatDateRussianPDF(training.completionDate) : ''}</td>
+                                    </tr>
+                                `).join('')
+                                : `
+                                    <tr>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">${employee.firstName} ${employee.lastName}</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">CRA</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; height: 30px; color: #000000;">&nbsp;</td>
+                                        <td style="border: 1px solid #000000; padding: 8px; color: #000000;">&nbsp;</td>
+                                    </tr>
+                                `
+                            }
+                        </tbody>
+                    </table>
+                    
+                    <!-- FOOTER (moved from header) -->
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #000000; font-size: 10pt; text-align: center; color: #000000; page-break-inside: avoid;">
+                        <div style="color: #000000;">Конфиденциально</div>
+                        <div style="color: #000000; margin-top: 5px;">SF-GCP-066-01 «Журнал регистрации самостоятельных тренингов проектной команды»</div>
+                    </div>
+                </div>
+            `;
+            
+            // Generate filename
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + 
+                          String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(today.getDate()).padStart(2, '0');
+            const filename = `${employee.lastName}_${employee.firstName}_Zhurnal_Treningov_${dateStr}.pdf`;
+            
+            // Configure PDF options
+            const options = {
+                margin: 10,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    letterRendering: true,
+                    allowTaint: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait'
+                }
+            };
+            
+            // Generate and download PDF with proper Russian font support
+            html2pdf().set(options).from(content).save().then(() => {
+                // Show success message
+                alert(`PDF документ создан!\n\nФайл: ${filename}\nВсе русские символы отображаются корректно!\nЗавершенных тренингов: ${completedTrainings.length}`);
+            }).catch((error) => {
+                console.error('PDF generation error:', error);
+                alert('Ошибка при создании PDF. Пожалуйста, попробуйте еще раз.');
+            });
+        }
+        
+        function formatDateRussianPDF(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+        
+        // Legacy RTF document generation (kept for backward compatibility)
+        function generateForms() {
+            generatePDFForms(); // Redirect to PDF generation
+        }
+
+        // CSV Export with UTF-8 BOM for Russian character support
+        function exportToCSV() {
+            if (employees.length === 0 || trainings.length === 0) {
+                alert('Please add employees and trainings before exporting.');
+                return;
+            }
+            
+            const currentProjectCode = document.getElementById('projectCode').value || 'N/A';
+            
+            // Add UTF-8 BOM for Excel compatibility with Russian characters
+            let csv = '\ufeff';
+            
+            // Headers
+            csv += 'Employee Name,Training Name,Completion Status,Completion Date,Project Code\n';
+            
+            // Sort employees and trainings for consistent output
+            const sortedEmployees = [...employees].sort((a, b) => 
+                (a.lastName + ' ' + a.firstName).localeCompare(b.lastName + ' ' + b.firstName)
+            );
+            const sortedTrainings = [...trainings].sort((a, b) => a.name.localeCompare(b.name));
+            
+            // Data rows - include ALL combinations (completed and not completed)
+            sortedEmployees.forEach(employee => {
+                sortedTrainings.forEach(training => {
+                    const completion = completions.find(c => 
+                        c.employeeId === employee.id && c.trainingId === training.id
+                    );
+                    
+                    const empName = `${employee.firstName} ${employee.lastName}`;
+                    const status = completion && completion.completed ? 'Completed' : 'Not Completed';
+                    const date = completion && completion.completed && completion.completionDate 
+                        ? formatDateRussian(completion.completionDate) // DD.MM.YYYY format
+                        : '';
+                    
+                    csv += `"${empName}","${training.name}","${status}","${date}","${currentProjectCode}"\n`;
+                });
+            });
+            
+            // Create blob with UTF-8 encoding
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Training_Completion_Report_${getCurrentDate()}.csv`);
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            alert('CSV report successfully generated with Russian character support!');
+        }
+        
+        function getTodayDate() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // Form handlers
+        function initializeForms() {
+            // Employee form
+            document.getElementById('employeeForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                
+                addEmployee(firstName, lastName);
+                
+                // Reset form
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+            });
+            
+            // Training form
+            document.getElementById('trainingForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const trainingName = document.getElementById('trainingName').value;
+                
+                addTraining(trainingName);
+                
+                // Reset form
+                document.getElementById('trainingName').value = '';
+            });
+        }
+
+        // Project code management
+        function initializeProjectCode() {
+            const projectCodeInput = document.getElementById('projectCode');
+            projectCodeInput.addEventListener('change', (e) => {
+                projectCode = e.target.value;
+            });
+        }
+
+
+
+        // Initialize application
+        function init() {
+            initializeSampleData();
+            initializeTabs();
+            initializeForms();
+            initializeSearch();
+            initializeProjectCode();
+
+            initializeViewSelector();
+            renderEmployeeList();
+            renderTrainingList();
+            renderMatrix();
+            updateStats();
+        }
+
+        // Start the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
